@@ -1205,12 +1205,11 @@ async function sendAIRequest(text, typingEl) {
 
 async function send(override){
   const text=override||promptEl.value.trim(); if(!text||waiting) return;
-  addMsg('user',text,null);
-  conversationLog.push({role:'user',text,time:fmtTime()});  // save to history before sending
+  addMsg('user',text,null);     // addMsg() already saves to conversationLog
   promptEl.value=''; resizeTa(); charCounter.textContent=''; charCounter.className='char-counter';
   setWaiting(true);
   const t=addTypingIndicator();
-  await sendAIRequest(text,t);  // send to server and stream the response back
+  await sendAIRequest(text,t);
 }
 
 sendBtn.addEventListener('click',()=>{ if(!waiting&&promptEl.value.trim()) send(); });
