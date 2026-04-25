@@ -1163,8 +1163,8 @@ async function sendAIRequest(text, typingEl) {
   }
 
   try {
-    // --- Step 2: Send request to server with retry and timeout from client.js ---
-    const response = await sendWithRetry(text, conversationLog);
+    // --- Step 2: Send request through queue — client.js handles retry and timeout ---
+    const response = await queueRequest(text, conversationLog);
 
     // --- Step 3: Open a stream to read the response chunk by chunk ---
     const reader  = response.body.getReader();  // opens a live reading channel from the server
