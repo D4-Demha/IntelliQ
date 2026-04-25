@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script src="/client.js"></script>
 
 <style>
 /* ═══════════ CUSTOM PROPERTIES ═══════════ */
@@ -1149,7 +1150,67 @@ function addTypingIndicator(){
   wrap.appendChild(content); msgsEl.appendChild(wrap); scrollDown(); return wrap;
 }
 
-/* sendAIRequest and send functions are now in /client.js */
+/* Core AI request — uses helpers from client.js for retry, timeout, and history */
+async function sendAIRequest(text, typingEl) {
+  const t = typingEl || addTypingIndicator();
+
+  // --- Step 1: Check internet before doing anything ---
+  if (!isOnline()) {
+    if (t) t.remove();
+    addMsg('ai', 'No internet connection detected. Please check your network and try again.');
+    setWaiting(false);
+    return;
+  }
+
+  try {
+    // --- Step 2: Send request to server with retry and timeout from client.js ---
+    const response = await sendWithRetry(text, conversationLog);
+
+    // --- Step 3: Open a stream to read the response chunk by chunk ---
+    const reader  = response.body.getReader();  // opens a live reading channel from the server
+    const decoder = new TextDecoder();          // converts raw bytes into readable text
+    t.remove();
+
+    const wrap=document.createElement('div'); wrap.className='msg ai';
+    const ts=document.createElement('div'); ts.className='timestamp'; ts.textContent=fmtTime(); wrap.appendChild(ts);
+    const content=document.createElement('div'); content.className='msg-content';
+    const md=document.createElement('div'); md.className='ai-md'; content.appendChild(md); wrap.appendChild(content);
+    msgsEl.appendChild(wrap);
+
+    // --- Step 4: Read stream until server signals it is done ---
+    let accumulated='';
+    while(true){
+      const {done,value}=await reader.read(); if(done) break;  // server finished, exit loop
+      accumulated+=decoder.decode(value,{stream:true});         // decode bytes into text
+      md.innerHTML=marked.parse(accumulated);                   // render markdown live
+      if(accumulated.includes('```')) Prism.highlightAllUnder(md);
+      scrollDown();
+    }
+
+    wrap.appendChild(makeActionsRow(accumulated,true,wrap,text));
+    conversationLog.push({role:'ai',text:accumulated,time:fmtTime()}); // save to history
+
+  } catch(err){
+    if(t) t.remove();
+    const msg = err.name === 'AbortError'
+      ? 'The request timed out. The server took too long to respond. Please try again.'
+      : 'Connection failed after multiple attempts. Please try again.';
+    addMsg('ai', msg);
+    console.error(err);
+  } finally {
+    setWaiting(false);  // always re-enable input when done
+  }
+}
+
+async function send(override){
+  const text=override||promptEl.value.trim(); if(!text||waiting) return;
+  addMsg('user',text,null);
+  conversationLog.push({role:'user',text,time:fmtTime()});  // save to history before sending
+  promptEl.value=''; resizeTa(); charCounter.textContent=''; charCounter.className='char-counter';
+  setWaiting(true);
+  const t=addTypingIndicator();
+  await sendAIRequest(text,t);  // send to server and stream the response back
+}
 
 sendBtn.addEventListener('click',()=>{ if(!waiting&&promptEl.value.trim()) send(); });
 document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>send(c.dataset.q)));
@@ -1199,6 +1260,6 @@ if(!/Mobi|Android/i.test(navigator.userAgent)) setTimeout(()=>promptEl.focus(),1
 
 })();
 </script>
-<script src="/client.js"></script>
+
 </body>
 </html>
