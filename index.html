@@ -1046,6 +1046,7 @@ let started=false,waiting=false;
 
 // conversation log: [{role, text, time}]
 const conversationLog = [];
+window.conversationLog = conversationLog;  // expose to browser console for debugging
 
 function scrollDown(){ setTimeout(()=>{ if(isNearBottom||!started) scrollEl.scrollTo({top:scrollEl.scrollHeight,behavior:'smooth'}); },60); }
 function showBackdrop(){ if(!started){started=true;backdrop.classList.add('on');} }
