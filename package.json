@@ -1,0 +1,6 @@
+{
+  "name": "ai-assistant-frontend",
+  "scripts": {
+    "vercel-build": "echo 'Static frontend, no build step needed.'"
+  }
+}
