@@ -5,7 +5,6 @@
 #   2. Extracting the user's message and conversation history from the request
 #   3. Packaging the server's response as a stream to send back to the client
 
-import sys, os; sys.path.insert(0, os.path.dirname(__file__))  # ensures sibling imports work on Vercel
 from flask import Response
 from logger_setup import logger
 

@@ -4,7 +4,6 @@
 # measures how long the response takes, and streams it back token by token.
 # If the primary AI model fails, it automatically falls back to a backup model.
 
-import sys, os; sys.path.insert(0, os.path.dirname(__file__))  # ensures sibling imports work on Vercel
 import time
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage

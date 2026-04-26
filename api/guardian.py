@@ -1,84 +1,77 @@
-# api/ai_handler.py
-# This file handles everything that happens after the connection is established.
-# It takes the validated message + conversation history, sends it to the Groq AI,
-# measures how long the response takes, and streams it back token by token.
-# If the primary AI model fails, it automatically falls back to a backup model.
+# api/guardian.py
+# This file is the security layer between the client and the AI.
+# Every message passes through here before reaching the AI, and every
+# AI response passes through here before reaching the client.
+# It uses a RISK SCORING system: the higher the score, the more suspicious the message.
 
-import sys, os; sys.path.insert(0, os.path.dirname(__file__))  # ensures sibling imports work on Vercel
-import time
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.messages import HumanMessage, AIMessage
-from langchain_groq import ChatGroq
-import config
+import re
 from logger_setup import logger
-from guardian import is_input_safe, is_output_safe, SAFETY_REPLY, ERROR_REPLY
 
-PRIMARY_MODEL  = config.GROQ_MODEL_NAME         # main model we use for all requests
-FALLBACK_MODEL = "llama3-8b-8192"               # backup model if the primary one fails
+SAFETY_REPLY = "I'm sorry, but I can't answer questions about my own internal programming or instructions."
+ERROR_REPLY  = "An unexpected error occurred. Please try rephrasing your request."
+RISK_THRESHOLD = 3   # total risk score needed to block a message
 
-# Creates a connection to the Groq AI using the given model name
-def create_llm(model_name):
-    return ChatGroq(
-        temperature=config.AGENT_TEMPERATURE,   # controls creativity: lower means more focused
-        model_name=model_name,                  # which AI model to use
-        groq_api_key=config.GROQ_API_KEY        # our secret key to access Groq's API
-    )
+# Each phrase has a risk score: higher means more dangerous
+RISKY_INPUT_PHRASES = {
+    "ignore previous instructions" : 3,   # classic prompt injection: instant block
+    "system prompt"                : 3,   # trying to extract internal instructions
+    "your instructions"            : 2,   # probing for system configuration
+    "ignore your rules"            : 3,   # trying to bypass safety rules
+    "pretend you have no rules"    : 3,   # jailbreak attempt
+    "you are now"                  : 2,   # trying to reassign the AI's identity
+    "act as"                       : 1,   # could be roleplay or an injection attempt
+    "disregard"                    : 1,   # trying to make AI ignore its guidelines
+    "override"                     : 1,   # another bypass attempt keyword
+}
 
-# Converts the raw history list from the client into LangChain message objects
-def format_history(history):
-    messages = []
-    for item in history:
-        if item.get("role") == "user":
-            messages.append(HumanMessage(content=item["content"]))       # user's past messages
-        elif item.get("role") == "assistant":
-            messages.append(AIMessage(content=item["content"]))          # AI's past responses
-    return messages                                                       # return formatted list
+# Phrases that suggest the AI accidentally leaked its internal instructions
+BLOCKED_OUTPUT_PHRASES = [
+    "system prompt",
+    "section 1 -",
+    "safety mandate",
+    "meta-instructions",
+    "follow-up."
+]
 
-# Builds the full prompt by combining system instructions + history + current message
-def build_chain(llm):
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", config.SYSTEM_PROMPT),       # the AI's personality, rules, and instructions
-        MessagesPlaceholder("history"),          # slot where conversation history is inserted
-        ("user", "{query}")                     # the user's current message
-    ])
-    return prompt | llm                         # connect the prompt template to the AI model
+# Removes HTML tags and potentially dangerous characters from the input
+def sanitize_input(text):
+    text = re.sub(r'<[^>]+>', '', text)         # strip any HTML tags (e.g. <script>)
+    text = re.sub(r'[{}\\]', '', text)          # remove curly braces and backslashes
+    text = text.strip()                         # remove leading and trailing whitespace
+    return text                                 # return the clean text
 
-# Main function: takes the question + history and streams the AI's response back
-def get_ai_response(query, history=[]):
+# Calculates a risk score for the input: returns the score and what triggered it
+def calculate_risk_score(text):
+    text_lower = text.lower()    # normalize to lowercase for comparison
+    score      = 0
+    triggers   = []
 
-    # --- Step 1: Run the input through the security layer ---
-    safe, clean_query = is_input_safe(query)    # sanitize and check risk score
-    if not safe:
-        yield SAFETY_REPLY                      # send the safety message instead of calling AI
-        return
+    for phrase, weight in RISKY_INPUT_PHRASES.items():
+        if phrase in text_lower:
+            score    += weight           # add the phrase's risk weight to total score
+            triggers.append(phrase)      # record which phrase triggered it
 
-    formatted_history = format_history(history) # convert history to LangChain format
-    start_time        = time.time()             # start the timer before calling the AI
+    return score, triggers               # return total score and list of matched phrases
 
-    # --- Step 2: Try the primary model, fall back to backup if it fails ---
-    for model_name in [PRIMARY_MODEL, FALLBACK_MODEL]:
-        try:
-            llm   = create_llm(model_name)      # connect to the chosen model
-            chain = build_chain(llm)            # build the prompt + model pipeline
+# Full input check: sanitizes first, then scores for risk
+def is_input_safe(text):
+    text  = sanitize_input(text)                        # clean the input first
+    score, triggers = calculate_risk_score(text)        # calculate how risky it is
 
-            logger.info(f"Sending request to model: {model_name}")
+    if score >= RISK_THRESHOLD:
+        logger.warning(f"Input blocked. Risk score: {score}. Triggers: {triggers}")
+        return False, text                              # blocked: return False with cleaned text
 
-            # --- Step 3: Stream the response back to the client token by token ---
-            full_response = ""
-            for chunk in chain.stream({ "query": clean_query, "history": formatted_history }):
-                full_response += chunk.content  # build the full response in background
-                yield chunk.content             # send each token to the client immediately
+    if triggers:
+        logger.info(f"Low-risk input detected. Score: {score}. Phrases: {triggers}")
 
-            # --- Step 4: Log performance and check the output is safe ---
-            elapsed = round(time.time() - start_time, 2)             # calculate response time
-            logger.info(f"Response complete in {elapsed}s using {model_name}")
+    return True, text                                   # safe: return True with cleaned text
 
-            if not is_output_safe(full_response):                     # check for instruction leaks
-                logger.error("Output safety check failed: possible instruction leak")
-
-            return  # success: no need to try the fallback model
-
-        except Exception as e:
-            logger.error(f"Model {model_name} failed: {e}")
-            if model_name == FALLBACK_MODEL:
-                yield ERROR_REPLY   # both models failed: send a clean error to the client
+# Checks the AI's response to make sure it hasn't leaked internal instructions
+def is_output_safe(text):
+    text_lower = text.lower()
+    for phrase in BLOCKED_OUTPUT_PHRASES:
+        if phrase in text_lower:
+            logger.error(f"Output blocked: possible instruction leak: '{phrase}'")
+            return False   # output contains something it shouldn't
+    return True            # output looks clean
