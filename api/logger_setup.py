@@ -3,6 +3,7 @@
 # Sets up a logger that prints activity happening on the server side.
 # This helps us see what the server is doing behind the scenes during a request.
 
+import sys, os; sys.path.insert(0, os.path.dirname(__file__))  # ensures sibling imports work on Vercel
 import logging
 import sys
 

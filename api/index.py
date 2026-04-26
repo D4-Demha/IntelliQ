@@ -3,6 +3,9 @@
 # Every request from the client arrives here first.
 # This file also handles rate limiting: blocking clients that send too many requests.
 
+import sys, os
+sys.path.insert(0, os.path.dirname(__file__))  # ensures Python can find sibling files in /api
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from collections import defaultdict
@@ -12,7 +15,7 @@ from logger_setup import logger
 import time
 
 app = Flask(__name__)                                        # create the Flask server application
-CORS(app, origins=["https://smartagent.vercel.app"])        # only accept requests from our frontend
+CORS(app, origins=["https://intelliqai.vercel.app"])        # only accept requests from our frontend
 
 # --- Rate Limiting Setup ---
 request_log   = defaultdict(list)  # stores timestamps of each client's requests
