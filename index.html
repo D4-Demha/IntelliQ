@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Smart Agent</title>
+<title>IntelliQ</title>
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='32' y2='32' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0%25' stop-color='%235a8ee0'/%3E%3Cstop offset='100%25' stop-color='%238b68d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='7' fill='%230d1321'/%3E%3Crect x='2' y='2' width='28' height='28' rx='6' fill='none' stroke='url(%23g)' stroke-width='1'/%3E%3Ctext x='16' y='21' text-anchor='middle' font-family='system-ui%2Csans-serif' font-weight='700' font-size='13' fill='url(%23g)'%3ESA%3C%2Ftext%3E%3C%2Fsvg%3E"/>
 
@@ -606,14 +606,13 @@ textarea#prompt:disabled { opacity: 0.5; cursor: not-allowed; }
           <circle cx="16" cy="21" r="1.5" fill="url(#nlg2)" opacity="0.7"/>
         </svg>
       </div>
-      <span class="brand-name">Smart Agent</span>
+      <span class="brand-name">IntelliQ</span>
     </a>
     <div class="nav-sep hide-mobile"></div>
     <button class="nav-btn hide-mobile" id="mind-btn">Inside the Mind</button>
     <button class="nav-btn hide-mobile" id="feedback-btn-desktop">Feedback</button>
   </div>
   <div class="nav-right">
-    <a class="nav-btn hide-mobile" href="https://ahmedrehman.vercel.app" target="_blank" rel="noopener">Portfolio</a>
     <!-- Settings gear -->
     <button class="theme-toggle hide-mobile" id="settings-btn" title="Settings" style="margin-right:2px">
       <svg viewBox="0 0 16 16" fill="none" width="15" height="15">
@@ -634,7 +633,6 @@ textarea#prompt:disabled { opacity: 0.5; cursor: not-allowed; }
 <!-- MOBILE DROPDOWN -->
 <div class="mobile-dropdown" id="mobile-dropdown">
   <button class="dd-item" id="dd-mind"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5l2 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Inside the Mind</button>
-  <a class="dd-item" href="https://ahmedrehman.vercel.app" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 7h6M5 10h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Portfolio</a>
   <div class="dd-sep"></div>
   <button class="dd-item" id="dd-feedback"><svg viewBox="0 0 16 16" fill="none"><path d="M13 2H3a1 1 0 00-1 1v8a1 1 0 001 1h2l3 2 3-2h2a1 1 0 001-1V3a1 1 0 00-1-1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Feedback</button>
   <div class="dd-sep"></div>
@@ -662,7 +660,7 @@ textarea#prompt:disabled { opacity: 0.5; cursor: not-allowed; }
               <circle cx="13" cy="17" r="1.3" fill="currentColor" opacity="0.65"/>
             </svg>
           </div>
-          <h1>How can Smart Agent<br>help you today?</h1>
+          <h1>How can IntelliQ<br>help you today?</h1>
           <p>Ask anything. From analysis and code to creative writing and complex reasoning.</p>
           <div class="welcome-chips">
             <button class="chip" data-q="Explain quantum entanglement simply">Quantum entanglement</button>
@@ -680,7 +678,7 @@ textarea#prompt:disabled { opacity: 0.5; cursor: not-allowed; }
   <div class="input-shell">
     <div class="input-wrap">
       <div class="input-box">
-        <textarea id="prompt" placeholder="Message Smart Agent..." rows="1" autocomplete="off" spellcheck="true" readonly></textarea>
+        <textarea id="prompt" placeholder="Message IntelliQ..." rows="1" autocomplete="off" spellcheck="true" readonly></textarea>
         <div class="input-actions">
           <input type="file" id="file-input" multiple/>
           <button class="iact-btn" id="upload-btn" title="Attach file">
@@ -695,7 +693,7 @@ textarea#prompt:disabled { opacity: 0.5; cursor: not-allowed; }
         </div>
       </div>
       <div class="input-footer">
-        <p class="input-meta">Smart Agent may make mistakes. Verify important information.</p>
+        <p class="input-meta">IntelliQ may make mistakes. Verify important information.</p>
         <span class="char-counter" id="char-counter"></span>
       </div>
     </div>
@@ -716,17 +714,13 @@ textarea#prompt:disabled { opacity: 0.5; cursor: not-allowed; }
     <button class="modal-close" data-close="mind-modal">x</button>
     <span class="modal-tag">About</span>
     <h2>Inside the Mind</h2>
-    <p>Built by <strong style="color:var(--text-hi)">Ahmed Rehman</strong>. Smart Agent runs on a transformer-based language model with a 128K context window, designed to reason through problems and hold long conversations without losing track.</p>
+    <p>Built by <strong style="color:var(--text-hi)">Ahmed ur Rehman, Haseeb Haroon, Abdurrahman Shahid & Muhammad Mehdi</strong> — a group of developers from IoBM. IntelliQ runs on a transformer-based language model with a 128K context window, designed to reason through problems and hold long conversations without losing track.</p>
     <p>The more context you give it, the better it performs. Still being improved, so feedback is always welcome.</p>
     <div class="modal-stat-row">
       <div class="modal-stat"><div class="modal-stat-val">128K</div><div class="modal-stat-label">Context window</div></div>
       <div class="modal-stat"><div class="modal-stat-val">v2.3</div><div class="modal-stat-label">Version</div></div>
       <div class="modal-stat"><div class="modal-stat-val">2025</div><div class="modal-stat-label">Built</div></div>
     </div>
-    <a href="https://ahmedrehman.vercel.app" target="_blank" rel="noopener" class="modal-cta">
-      <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      View Portfolio
-    </a>
   </div>
 </div>
 
@@ -736,12 +730,12 @@ textarea#prompt:disabled { opacity: 0.5; cursor: not-allowed; }
     <button class="modal-close" data-close="feedback-modal">x</button>
     <span class="modal-tag">Feedback</span>
     <h2>Share your thoughts</h2>
-    <p style="margin-bottom:16px">Something working well? Something broken? This goes straight to the developer.</p>
+    <p style="margin-bottom:16px">Something working well? Something broken? This goes straight to our development team.</p>
     <div id="feedback-form-wrap" style="width:100%">
       <form class="feedback-form" id="feedback-form" action="https://api.web3forms.com/submit" method="POST">
         <input type="hidden" name="access_key" value="fa061214-ae8c-4836-8ba8-e42925ffd115"/>
-        <input type="hidden" name="subject" value="Smart Agent Feedback"/>
-        <input type="hidden" name="from_name" value="Smart Agent User"/>
+        <input type="hidden" name="subject" value="IntelliQ Feedback"/>
+        <input type="hidden" name="from_name" value="IntelliQ User"/>
         <textarea name="message" id="feedback-text" placeholder="What's on your mind..." required></textarea>
         <button type="submit" class="feedback-submit" id="feedback-submit-btn">Send Feedback</button>
       </form>
@@ -1093,7 +1087,7 @@ function makeActionsRow(rawText, isAI, msgEl, originalPrompt){
     downBtn.className='reaction-btn'; downBtn.title='Bad response'; downBtn.textContent='👎';
     downBtn.addEventListener('click',()=>{
       if(downBtn.classList.contains('active-down')){ downBtn.classList.remove('active-down'); }
-      else{ downBtn.classList.add('active-down'); upBtn.classList.remove('active-up'); showToast('Noted. This helps improve Smart Agent.'); }
+      else{ downBtn.classList.add('active-down'); upBtn.classList.remove('active-up'); showToast('Noted. This helps improve IntelliQ.'); }
     });
     row.appendChild(downBtn);
 
@@ -1220,14 +1214,14 @@ function exportConversation(format){
   if(!conversationLog.length){ showToast('Nothing to export yet.'); return; }
   let content='';
   if(format==='md'){
-    content = `# Smart Agent Conversation\n_Exported ${new Date().toLocaleString()}_\n\n---\n\n`;
+    content = `# IntelliQ Conversation\n_Exported ${new Date().toLocaleString()}_\n\n---\n\n`;
     conversationLog.forEach(m=>{
-      content += `**${m.role==='user'?'You':'Smart Agent'}** (${m.time})\n\n${m.text}\n\n---\n\n`;
+      content += `**${m.role==='user'?'You':'IntelliQ'}** (${m.time})\n\n${m.text}\n\n---\n\n`;
     });
   } else {
-    content = `Smart Agent Conversation\nExported: ${new Date().toLocaleString()}\n${'='.repeat(40)}\n\n`;
+    content = `IntelliQ Conversation\nExported: ${new Date().toLocaleString()}\n${'='.repeat(40)}\n\n`;
     conversationLog.forEach(m=>{
-      content += `[${m.time}] ${m.role==='user'?'You':'Smart Agent'}:\n${m.text}\n\n`;
+      content += `[${m.time}] ${m.role==='user'?'You':'IntelliQ'}:\n${m.text}\n\n`;
     });
   }
   const blob=new Blob([content],{type:'text/plain'}), a=document.createElement('a');
@@ -1246,7 +1240,7 @@ document.getElementById('clear-chat-btn').addEventListener('click',()=>{
   started=false; backdrop.classList.remove('on');
   const w=document.createElement('div'); w.id='welcome'; w.className='welcome';
   /* re-insert welcome screen */
-  w.innerHTML=`<div class="welcome-icon-wrap"><div class="welcome-ring"></div><div class="welcome-inner"></div><svg viewBox="0 0 26 26" fill="none"><rect x="2" y="2" width="22" height="22" rx="5.5" stroke="currentColor" stroke-width="1.3" fill="none" opacity="0.6"/><line x1="6.5" y1="9" x2="19.5" y2="9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/><line x1="6.5" y1="13" x2="19.5" y2="13" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><line x1="6.5" y1="17" x2="19.5" y2="17" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/><circle cx="10" cy="13" r="2" fill="currentColor"/><circle cx="16" cy="13" r="2" fill="currentColor"/><circle cx="13" cy="9" r="1.3" fill="currentColor" opacity="0.65"/><circle cx="13" cy="17" r="1.3" fill="currentColor" opacity="0.65"/></svg></div><h1>How can Smart Agent<br>help you today?</h1><p>Ask anything. From analysis and code to creative writing and complex reasoning.</p><div class="welcome-chips"><button class="chip" data-q="Explain quantum entanglement simply">Quantum entanglement</button><button class="chip" data-q="Write a noir-style short story opening">Write noir fiction</button><button class="chip" data-q="What makes great product design?">Great product design</button></div>`;
+  w.innerHTML=`<div class="welcome-icon-wrap"><div class="welcome-ring"></div><div class="welcome-inner"></div><svg viewBox="0 0 26 26" fill="none"><rect x="2" y="2" width="22" height="22" rx="5.5" stroke="currentColor" stroke-width="1.3" fill="none" opacity="0.6"/><line x1="6.5" y1="9" x2="19.5" y2="9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/><line x1="6.5" y1="13" x2="19.5" y2="13" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><line x1="6.5" y1="17" x2="19.5" y2="17" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/><circle cx="10" cy="13" r="2" fill="currentColor"/><circle cx="16" cy="13" r="2" fill="currentColor"/><circle cx="13" cy="9" r="1.3" fill="currentColor" opacity="0.65"/><circle cx="13" cy="17" r="1.3" fill="currentColor" opacity="0.65"/></svg></div><h1>How can IntelliQ<br>help you today?</h1><p>Ask anything. From analysis and code to creative writing and complex reasoning.</p><div class="welcome-chips"><button class="chip" data-q="Explain quantum entanglement simply">Quantum entanglement</button><button class="chip" data-q="Write a noir-style short story opening">Write noir fiction</button><button class="chip" data-q="What makes great product design?">Great product design</button></div>`;
   msgsEl.appendChild(w);
   w.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>send(c.dataset.q)));
   closeSettings(); showToast('Conversation cleared.');
