@@ -1,19 +1,18 @@
 # api/index.py
 # This is the ENTRY POINT of our server on Vercel.
 # Every request from the client arrives here first.
-# This file also handles rate limiting — blocking clients that send too many requests.
+# This file also handles rate limiting: blocking clients that send too many requests.
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from collections import defaultdict
-from api.connection import parse_incoming_request, create_stream_response, is_request_valid
-from api.ai_handler import get_ai_response
-from api.logger_setup import logger
+from connection import parse_incoming_request, create_stream_response, is_request_valid
+from ai_handler import get_ai_response
+from logger_setup import logger
 import time
 
 app = Flask(__name__)                                        # create the Flask server application
-# CORS(app, origins=["https://smartagent.vercel.app"])        # only accept requests from our frontend
-CORS(app, origins=["https://intelliqai.vercel.app"])        # only accept requests from our frontend
+CORS(app, origins=["https://smartagent.vercel.app"])        # only accept requests from our frontend
 
 # --- Rate Limiting Setup ---
 request_log   = defaultdict(list)  # stores timestamps of each client's requests
@@ -32,13 +31,13 @@ def is_rate_limited(client_ip):
     request_log[client_ip].append(now)                                            # log this new request
     return False                                                                   # client is within the limit
 
-# Health check endpoint — lets us verify the server is alive without sending a real message
+# Health check endpoint: lets us verify the server is alive without sending a real message
 @app.route('/api/health', methods=['GET'])
 def health():
     logger.info("Health check received")
     return jsonify({ "status": "ok", "message": "Server is running" }), 200  # respond with a simple status
 
-# Main endpoint — the client sends all chat messages here as POST requests
+# Main endpoint: the client sends all chat messages here as POST requests
 @app.route('/api', methods=['POST'])
 def ask():
     client_ip = request.remote_addr                    # get the client's IP address

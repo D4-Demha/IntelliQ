@@ -1,5 +1,5 @@
 // client.js
-// CLIENT side connection library — helpers called by send() in index.html
+// CLIENT side connection library: helpers called by send() in index.html
 // Handles: connection check, history building, request ID, queue, timeout, retry
 
 const SERVER_ENDPOINT = "/api";   // server endpoint on Vercel
@@ -9,7 +9,7 @@ const HISTORY_LIMIT   = 6;        // last 6 messages sent for AI context
 const MAX_PAYLOAD_KB  = 20;       // maximum request size in kilobytes
 
 let requestQueue   = [];          // holds pending requests if one is already running
-let isProcessing   = false;       // flag — true when a request is currently in progress
+let isProcessing   = false;       // flag: true when a request is currently in progress
 
 // Generates a short unique ID to track each request in the console logs
 function generateRequestId() {
@@ -18,7 +18,7 @@ function generateRequestId() {
 
 // Checks if the browser has an active internet connection
 function isOnline() {
-  return navigator.onLine;  // built-in browser API — true if connected, false if not
+  return navigator.onLine;  // built-in browser API: true if connected, false if not
 }
 
 // Builds conversation history from the log to give the AI context
@@ -29,11 +29,11 @@ function buildHistory(conversationLog) {
   }));
 }
 
-// Checks the payload size before sending — blocks anything unreasonably large
+// Checks the payload size before sending: blocks anything unreasonably large
 function isPayloadSafe(payload) {
   const sizeKB = new Blob([payload]).size / 1024;          // calculate size in KB
   if (sizeKB > MAX_PAYLOAD_KB) {
-    console.warn(`Payload too large: ${sizeKB.toFixed(1)}KB — blocked`);
+    console.warn(`Payload too large: ${sizeKB.toFixed(1)}KB: blocked`);
     return false;
   }
   return true;
@@ -58,7 +58,7 @@ async function attemptRequest(text, conversationLog, requestId) {
 
   clearTimeout(timeout);                                  // clear timer if response arrived in time
   if (!response.ok) throw new Error(`Server error: ${response.status}`);
-  console.log(`[${requestId}] Response received — starting stream`);   // log when stream begins
+  console.log(`[${requestId}] Response received: starting stream`);   // log when stream begins
   return response;
 }
 
@@ -70,13 +70,13 @@ async function sendWithRetry(text, conversationLog) {
       return await attemptRequest(text, conversationLog, requestId);
     } catch (err) {
       console.warn(`[${requestId}] Attempt ${attempt} failed: ${err.message}`);
-      if (attempt === MAX_RETRIES) throw err;             // all retries failed — give up
+      if (attempt === MAX_RETRIES) throw err;             // all retries failed: give up
       await new Promise(r => setTimeout(r, 1000 * attempt)); // wait 1s, 2s, 3s between retries
     }
   }
 }
 
-// Queues the request if another one is already running — processes them in order
+// Queues the request if another one is already running: processes them in order
 async function queueRequest(text, conversationLog) {
   return new Promise((resolve, reject) => {
     requestQueue.push({ text, conversationLog, resolve, reject });  // add to queue
@@ -84,7 +84,7 @@ async function queueRequest(text, conversationLog) {
   });
 }
 
-// Processes the next request in the queue — one at a time
+// Processes the next request in the queue: one at a time
 async function processQueue() {
   if (isProcessing || requestQueue.length === 0) return;  // exit if busy or queue is empty
   isProcessing = true;

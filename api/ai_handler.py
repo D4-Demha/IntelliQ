@@ -8,9 +8,9 @@ import time
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain_groq import ChatGroq
-from api import config
-from api.logger_setup import logger
-from api.guardian import is_input_safe, is_output_safe, SAFETY_REPLY, ERROR_REPLY
+import config
+from logger_setup import logger
+from guardian import is_input_safe, is_output_safe, SAFETY_REPLY, ERROR_REPLY
 
 PRIMARY_MODEL  = config.GROQ_MODEL_NAME         # main model we use for all requests
 FALLBACK_MODEL = "llama3-8b-8192"               # backup model if the primary one fails
@@ -18,7 +18,7 @@ FALLBACK_MODEL = "llama3-8b-8192"               # backup model if the primary on
 # Creates a connection to the Groq AI using the given model name
 def create_llm(model_name):
     return ChatGroq(
-        temperature=config.AGENT_TEMPERATURE,   # controls creativity — lower means more focused
+        temperature=config.AGENT_TEMPERATURE,   # controls creativity: lower means more focused
         model_name=model_name,                  # which AI model to use
         groq_api_key=config.GROQ_API_KEY        # our secret key to access Groq's API
     )
@@ -42,7 +42,7 @@ def build_chain(llm):
     ])
     return prompt | llm                         # connect the prompt template to the AI model
 
-# Main function — takes the question + history and streams the AI's response back
+# Main function: takes the question + history and streams the AI's response back
 def get_ai_response(query, history=[]):
 
     # --- Step 1: Run the input through the security layer ---
@@ -73,11 +73,11 @@ def get_ai_response(query, history=[]):
             logger.info(f"Response complete in {elapsed}s using {model_name}")
 
             if not is_output_safe(full_response):                     # check for instruction leaks
-                logger.error("Output safety check failed — possible instruction leak")
+                logger.error("Output safety check failed: possible instruction leak")
 
-            return  # success — no need to try the fallback model
+            return  # success: no need to try the fallback model
 
         except Exception as e:
             logger.error(f"Model {model_name} failed: {e}")
             if model_name == FALLBACK_MODEL:
-                yield ERROR_REPLY   # both models failed — send a clean error to the client
+                yield ERROR_REPLY   # both models failed: send a clean error to the client

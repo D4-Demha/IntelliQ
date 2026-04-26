@@ -6,7 +6,7 @@
 #   3. Packaging the server's response as a stream to send back to the client
 
 from flask import Response
-from api.logger_setup import logger
+from logger_setup import logger
 
 MAX_MESSAGE_LENGTH = 2000   # maximum characters allowed in a single message
 MAX_HISTORY_LENGTH = 20     # maximum number of history messages allowed per request
@@ -53,7 +53,7 @@ def create_stream_response(stream):
         stream,                                     # the live stream of AI tokens
         content_type="text/plain; charset=utf-8",   # tell the client to expect plain text
         headers={
-            "X-Content-Type-Options": "nosniff",    # security header — prevents MIME sniffing
+            "X-Content-Type-Options": "nosniff",    # security header: prevents MIME sniffing
             "Cache-Control": "no-cache"             # tell the client never to cache AI responses
         }
     )
