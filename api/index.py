@@ -15,7 +15,7 @@ from logger_setup import logger
 import time
 
 app = Flask(__name__)                                        # create the Flask server application
-CORS(app, origins=["https://intelliqai.vercel.app"])        # only accept requests from our frontend
+CORS(app, origins=["https://intelliq.tech", "https://www.intelliq.tech", "https://intelliqai.vercel.app"])  # accept requests from all our domains
 
 # --- Rate Limiting Setup ---
 request_log   = defaultdict(list)  # stores timestamps of each client's requests
