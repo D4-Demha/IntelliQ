@@ -5,11 +5,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# --- Groq API Key ---
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# --- LLM Configuration ---
-# GROQ_MODEL_NAME = "meta-llama/llama-4-scout-17b-16e-instruct"
 GROQ_MODEL_NAME = "llama-3.3-70b-versatile"
 AGENT_TEMPERATURE = 0.4
 

@@ -7,9 +7,9 @@ import logging
 import sys
 
 logging.basicConfig(
-    level=logging.INFO,                                                               # log INFO level and above
-    format="%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s",  # timestamp + file + line number
-    stream=sys.stdout                                                                 # print logs to the terminal
+    level=logging.INFO,                                                            
+    format="%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s",
+    stream=sys.stdout                                                              
 )
 
-logger = logging.getLogger(__name__)  # create a logger instance to use across the app
+logger = logging.getLogger(__name__)  
