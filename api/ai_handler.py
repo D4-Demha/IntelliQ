@@ -15,7 +15,7 @@ from guardian import is_input_safe, is_output_safe, SAFETY_REPLY, ERROR_REPLY
 PRIMARY_MODEL  = config.GROQ_MODEL_NAME       
 FALLBACK_MODEL = "llama3-8b-8192"
 
-def create_llm(model_name):
+def create_llm(model_name): # creating model for response
     return ChatGroq(
         temperature=config.AGENT_TEMPERATURE,   
         model_name=model_name,                  
