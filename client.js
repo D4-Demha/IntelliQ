@@ -8,15 +8,15 @@ const TIMEOUT_MS      = 15000;
 const HISTORY_LIMIT   = 6;       
 const MAX_PAYLOAD_KB  = 20;      
 
-let requestQueue   = [];         
-let isProcessing   = false;      
+let requestQueue   = [];       // for rate limiting and request prioritization        
+let isProcessing   = false;    // for syncronization
 
-function generateRequestId() {
+function generateRequestId() {    //generates random id for each request
   return 'req_' + Math.random().toString(36).slice(2, 7); 
 }
 
-function isOnline() {
-  return navigator.onLine;  
+function isOnline() {   // for verifying internet connection
+  return navigator.onLine;    
 }
 
 function buildHistory(conversationLog) {
@@ -37,7 +37,7 @@ function isPayloadSafe(payload) {
 
 async function attemptRequest(text, conversationLog, requestId) {
   const payload    = JSON.stringify({ question: text, history: buildHistory(conversationLog) });
-  const controller = new AbortController();                             
+  const controller = new AbortController();   // for 15 second timeout
   const timeout    = setTimeout(() => controller.abort(), TIMEOUT_MS); 
 
   if (!isPayloadSafe(payload)) throw new Error("Payload too large");   
@@ -66,7 +66,7 @@ async function sendWithRetry(text, conversationLog) {
     } catch (err) {
       console.warn(`[${requestId}] Attempt ${attempt} failed: ${err.message}`);
       if (attempt === MAX_RETRIES) throw err;             
-      await new Promise(r => setTimeout(r, 1000 * attempt));
+      await new Promise(r => setTimeout(r, 1000 * attempt));    // linear backoff
     }
   }
 }
